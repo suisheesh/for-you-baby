@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For You ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #0f0f14;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+  color: white;
+}
+
+/* ===== HEART BACKGROUND ===== */
+#heart-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.heart-word {
+  position: absolute;
+  color: rgba(255, 0, 0, 0.75);
+  font-size: 14px;
+  user-select: none;
+  animation: heartPulse 6s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(255,0,0,0.8);
+}
+
+@keyframes heartPulse {
+  0%,100% { transform: scale(1); opacity: 0.25; }
+  50% { transform: scale(1.1); opacity: 0.45; }
+}
+
+/* ===== FLOATING PHOTOS ===== */
+#scene {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+}
+
+.photo {
+  position: absolute;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  filter: brightness(0.85);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.photo:hover {
+  filter: brightness(1);
+  transform: scale(1.08);
+}
+
+/* ===== PLAY BUTTON ===== */
+.play-btn {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #ff6aa2, #ff9ecf);
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+  box-shadow: 0 15px 40px rgba(255,106,162,0.6);
+  z-index: 10;
+}
+
+/* ===== LETTER ===== */
+.letter {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease;
+  z-index: 20;
+  padding: 20px;
+}
+
+.letter.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.letter-box {
+  max-width: 700px;
+  padding: 40px;
+  background: #16161f;
+  border-radius: 18px;
+  text-align: center;
+  line-height: 1.9;
+  animation: fadeUp 1s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<div id="heart-bg"></div>
+<div id="scene"></div>
+
+<button class="play-btn" id="playBtn">▶</button>
+
+<div class="letter" id="letter">
+  <div class="letter-box">
+    <h1>For My Beautiful Babi</h1>
+    <p>
+Mahal kong Andrea,<br><br>
+
+SOUP RICEEEEE!!!! hehehehe. Babi kong napaka ganda, I LOVEEE YOUUUU  
+sa ngayon nanonood ka babi habang ginagawa ko ito, pero babi mahal  
+kahit sabihin mong wala ka ng pake sa mga ganito, itutuloy ko parin.  
+Kasi mahal kita.<br><br>
+
+Sa unang pahina na sinulat natin ang ating tadhana<br>
+Tilay ako'y masaya dahil ikaw ang kasama<br>
+Kasi sino pa naman ang di matutuwa kapag kausap ka?<br>
+Eh sa bawat bigkas ng mga salita sa labi mo nakaka-inlove na<br><br>
+
+Alam mo gusto ko balikan ang una nating pagkikita sa camera<br>
+Na tila'y nag-aalangan pa dahil baka makumpara sa iba<br>
+Pero sa totoo ika'y napaka ganda<br>
+Na parang ayaw na kumurap pa ng aking mga mata<br><br>
+
+Dahil sa tuwing ika'y nasisilayan<br>
+Hindi ko maisipan<br>
+Na ang babaeng katulad mo ay aking makakatuluyan<br>
+Kahit ang aking isipan di makapaniwala na di lang na tayo magkaibigan<br><br>
+
+Dahil alam ko sa susunod na mga pahina<br>
+Ayaw kong magpahinga<br>
+Dahil ako'y manghihina<br>
+Kung wala ka sa tuwi-tuwina<br><br>
+
+Pwede ba sa panaginip muna tayo magkita<br>
+Para kahit saglit tayo'y magkasama<br>
+At madama natin ang isa't isa<br>
+Kahit yakap at halik, sapat na sapat na<br><br>
+
+Pero alam ko sa katapusan ng ating pahina<br>
+Dito man o sa kabilang mundo<br>
+Ikaw parin ang pipiliin ko<br>
+At iibigin muli ng buong buo<br><br>
+
+Mahal na mahal na mahal kita Andrea<br>
+Ikaw lang, walang iba<br>
+— Your Babi
+    </p>
+  </div>
+</div>
+
+<audio id="voiceAudio">
+  <source src="audio/voice.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* ===== HEART SHAPE ===== */
+const heartBg = document.getElementById("heart-bg");
+const cx = window.innerWidth / 2;
+const cy = window.innerHeight / 2;
+const scale = 12;
+
+for (let t = 0; t < Math.PI * 2; t += 0.08) {
+  const x = 16 * Math.pow(Math.sin(t), 3);
+  const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+
+  const span = document.createElement("span");
+  span.className = "heart-word";
+  span.textContent = "Andrea";
+  span.style.left = cx + x * scale + "px";
+  span.style.top = cy + y * scale + "px";
+  heartBg.appendChild(span);
+}
+
+/* ===== FLOATING PHOTOS (65 IMAGES) ===== */
+const scene = document.getElementById("scene");
+const photos = [];
+const TOTAL = 65;
+
+for (let i = 1; i <= TOTAL; i++) {
+  const img = document.createElement("img");
+  img.src = `images/pic${i}.jpg`;
+  img.className = "photo";
+
+  const size = 90 + Math.random() * 60;
+  img.style.width = size + "px";
+
+  const obj = {
+    el: img,
+    x: Math.random() * (window.innerWidth - size),
+    y: Math.random() * (window.innerHeight - size),
+    vx: (Math.random() * 0.25 + 0.05) * (Math.random() < 0.5 ? -1 : 1),
+    vy: (Math.random() * 0.25 + 0.05) * (Math.random() < 0.5 ? -1 : 1),
+    size
+  };
+
+  scene.appendChild(img);
+  photos.push(obj);
+}
+
+function animate() {
+  for (const p of photos) {
+    p.x += p.vx;
+    p.y += p.vy;
+
+    if (p.x <= 0 || p.x + p.size >= window.innerWidth) p.vx *= -1;
+    if (p.y <= 0 || p.y + p.size >= window.innerHeight) p.vy *= -1;
+
+    p.el.style.transform = `translate(${p.x}px, ${p.y}px)`;
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* ===== PLAY BUTTON ===== */
+const playBtn = document.getElementById("playBtn");
+const letter = document.getElementById("letter");
+const audio = document.getElementById("voiceAudio");
+
+playBtn.addEventListener("click", () => {
+  letter.classList.add("active");
+  audio.play().catch(() => {});
+});
+
+letter.addEventListener("click", e => {
+  if (e.target === letter) {
+    letter.classList.remove("active");
+  }
+});
+</script>
+
+</body>
+</html>
